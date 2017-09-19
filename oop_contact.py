@@ -6,10 +6,9 @@ class Contact():
 		self.gender = gender
 		self.email_address = email_address
 		self.postal_address = postal_address
-
-	def new_contact(self):
-		print ("Name is {}\n".format(self.name), "Phone Number is {}\n".format(self.phone_number), "Gender is {}\n".format(self.gender), 
-			"Email Address is {}\n".format(self.email_address), "Postal Address is {}\n".format(self.postal_address))
+	
+	def __repr__(self):
+		return (" Name:{}\n Phone Number:{}\n Gender:{}\n Email Address:{}\n Postal Address:{}".format(self.name,self.phone_number,self.gender,self.email_address,self.postal_address))
 	
 class ContactManager():
 	def __init__(self, contacts=[]):
@@ -19,30 +18,53 @@ class ContactManager():
 		self.contacts.append(contact)
 
 	def delete_contact(self, contact):
+		if len(self.contacts) != 0:
+		
+			if isinstance(contact, Contact):
+				if contact in self.contacts:
+					self.contacts.remove(contact)
+					return True
+				else:
+					return None 
+			else:
+				raise TypeError ("Not a contact!")
+		else:
+			raise ValueError("Zero Contacts!!")
+
+	def search_contact(self, name):
 		for contact in self.contacts:
 			if contact.name == name:
-				self.contacts.remove(contact)
 				return contact
-		return None
+			else:
+				return None
+	
+end = True
+address_book = ContactManager()
 
-	def search_contact(self, contact):
-		for contact in self.contacts:
-			print(contact.name)
+while end:
+	
+	action = input('What do you want to do? Enter a number \n1) Add contact\n2) Search for a contact\n3) Delete a contact\n4) Exit')
 
+	if action == '1':
+		name = input("Please enter your name: ")
+		phone_number = input("Please enter phone number: ")
+		gender = input("Please enter your gender: ")
+		email_address = input("Please enter your email address: ")
+		postal_address = input("Please enter your postal address: ")
 
-name = input ("Please enter your name: ")
-phone_number = input ("Please enter phone number: ")
-gender = input ("Please enter your gender: ")
-email_address = input ("Please enter your email address: ")
-postal_address = input ("Please enter your postal address: ")
+		address_book.add_contact(Contact(name, phone_number, gender, email_address, postal_address))
+	elif action == '2':
+		name = input('Enter a name to search for:')
+		print(address_book.search_contact(name))
 
-contactfile = Contact(name, phone_number, gender, email_address, postal_address)
-
-contactfile.new_contact()
-
-contactfile = ContactManager()
-contactfile.add_contact(Contact(name = "", phone_number = "", gender = "", email_address = "", postal_address = ""))
-contactfile.delete_contact(Contact(name = "", phone_number = "", gender = "", email_address = "", postal_address = ""))
-
-#print(len(contactfile.contacts))
-
+	elif action == '3':
+		action = input('Delete a contact? what is the name: ')
+		c = address_book.search_contact(action)
+		if address_book.delete_contact(c):
+			print("{} Deleted".format(c.name))
+		else:
+			print ("Not found!")
+	elif action == '4':
+		end = False
+	else:
+		print('Wrong option. Do you want to quit the program? Exit by entering 4')
