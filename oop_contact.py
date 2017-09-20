@@ -9,10 +9,11 @@ class Contact():
 	
 	def __repr__(self):
 		return (" Name:{}\n Phone Number:{}\n Gender:{}\n Email Address:{}\n Postal Address:{}".format(self.name,self.phone_number,self.gender,self.email_address,self.postal_address))
-	
+
 class ContactManager():
 	def __init__(self, contacts=[]):
 		self.contacts=contacts
+		self.load_existing_contacts()
 
 	def add_contact(self, contact):
 		self.contacts.append(contact)
@@ -37,6 +38,15 @@ class ContactManager():
 				return contact
 			else:
 				return None
+
+	def load_existing_contacts(self):
+		with open('contacts.csv') as file:
+			for line in file.readlines():
+				name, gender, email = line.split(',')
+				self.add_contact(Contact())
+
+	def save_contacts(self):
+		pass
 	
 end = True
 address_book = ContactManager()
@@ -66,5 +76,6 @@ while end:
 			print ("Not found!")
 	elif action == '4':
 		end = False
+		address_book.save_contacts()
 	else:
 		print('Wrong option. Do you want to quit the program? Exit by entering 4')
